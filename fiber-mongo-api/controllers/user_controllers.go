@@ -34,6 +34,15 @@ func CreateUser(c *fiber.Ctx) error {
 		return c.Status(http.StatusBadRequest).JSON(responses.UserResponse{Status: http.StatusBadRequest, Message: "error", Data: &fiber.Map{"data": validationErr.Error()}})
 	}
 
+	// Check if the email already exists in the database
+	resultEmail := userCollection.FindOne(ctx, bson.M{"email": user.Email})
+	if resultEmail.Err() == nil {
+		return c.Status(http.StatusConflict).JSON(responses.UserResponse{Status: http.StatusConflict, Message: "error", Data: &fiber.Map{"data": "Email already exists!"}})
+
+	} else if resultEmail.Err() != mongo.ErrNoDocuments {
+		return c.Status(http.StatusInternalServerError).JSON(responses.UserResponse{Status: http.StatusInternalServerError, Message: "error", Data: &fiber.Map{"data": resultEmail.Err().Error()}})
+	}
+
 	newUser := models.User{
 		Id:       primitive.NewObjectID(),
 		Name:     user.Name,
