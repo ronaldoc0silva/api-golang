@@ -4,7 +4,9 @@ pipeline {
     stages {
         stage ('Inicial') {
             steps {
-                echo 'Iniciando pipeline'
+                script {
+                    dockerapp = docker.build("ronaldosilva00/api-golang:v1.2", '-f ./Dockerfile .')
+                }
             }
         }
     }
