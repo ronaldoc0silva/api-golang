@@ -1,7 +1,6 @@
-package routes
+package statistics
 
 import (
-	"fiber-mongo-api/controllers"
 	"sync"
 
 	"fmt"
@@ -42,29 +41,5 @@ func statsHandler(ctx *fiber.Ctx, counter *Counter) error {
 	return ctx.SendString(fmt.Sprintf("Número total de solicitações: %d", count))
 }
 
-func getAllUsersHandler(ctx *fiber.Ctx) error {
-	// Lógica para obter todos os usuários
-	return ctx.SendString("Listagem de todos os usuários")
-}
-
 // Instancia o contador
 var counter = &Counter{}
-
-func UserRoute(app *fiber.App) {
-
-	app.Use(counter.CountMiddleware)
-
-	app.Post("/user", controllers.CreateUser)
-	app.Get("/user/:userId", controllers.GetAUser)
-
-	app.Put("/user/:userId", controllers.EditAUser)
-	app.Delete("/user/:userId", controllers.DeleteAUser)
-	//app.Get("/users", controllers.GetAllUsers)
-
-	app.Get("/stats", func(ctx *fiber.Ctx) error {
-		return statsHandler(ctx, counter)
-	})
-
-	app.Get("/users", controllers.GetAllUsers, getAllUsersHandler)
-
-}
