@@ -2,10 +2,10 @@ pipeline {
     agent any
 
     stages {
-        stage ('Inicial') {
+        stage ('Build Image') {
             steps {
                 script {
-                    dockerapp = docker.build("ronaldosilva00/api-golang:v1.2", '-f ./Dockerfile .')
+                    dockerapp = docker.build("ronaldosilva00/api-golang:${env.BUILD_ID}", '-f ./Dockerfile .')
                 }
             }
         }
